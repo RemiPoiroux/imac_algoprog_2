@@ -14,16 +14,51 @@ using std::size_t;
  */
 void binarySearchAll(Array& array, int toSearch, int& indexMin, int& indexMax)
 {
-	// do not use increments, use two different binary search loop
-    indexMin = indexMax = -1;
+    // do not use increments, use two different binary search loop
+    int start=0;
+    int end=array.size();
+
+    int trouve=0;
+
+    while(start<end & trouve==0){
+
+        int mid=(start+end)/2;
+
+        if (toSearch>array[mid]){
+            start=mid+1;
+        }
+        else if (toSearch<array[mid]){
+            end=mid;
+        }
+
+        else{
+            trouve=1;
+            indexMin=mid;
+            indexMax=mid;
+            while(indexMin>0 && array[indexMin-1]==toSearch)
+            {
+                indexMin--;
+            }
+            while(indexMax<array.size()-1 && array[indexMax+1]==toSearch)
+            {
+                indexMax++;
+            }
+
+        }
+    }
+
+    if (trouve==0){
+        indexMin=indexMax=-1;
+    }
+
 }
 
 int main(int argc, char *argv[])
 {
-	QApplication a(argc, argv);
-	MainWindow::instruction_duration = 500;
-	w = new BinarySearchAllWindow(binarySearchAll);
-	w->show();
+    QApplication a(argc, argv);
+    MainWindow::instruction_duration = 500;
+    w = new BinarySearchAllWindow(binarySearchAll);
+    w->show();
 
-	return a.exec();
+    return a.exec();
 }

@@ -18,10 +18,10 @@ void slow_sort(Array& toSort){
 
 int main(int argc, char *argv[])
 {
-	QApplication a(argc, argv);
+    QApplication a(argc, argv);
     MainWindow::instruction_duration = 100; // delay between each array access (set, get, insert, ...)
     w = new TestMainWindow(slow_sort); // window which display the behavior of the sort algorithm
     w->show();
 
-	return a.exec();
+    return a.exec();
 }
