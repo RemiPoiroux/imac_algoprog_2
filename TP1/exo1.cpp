@@ -4,30 +4,27 @@
 
 #define return_and_display(result) return _.store(result);
 
-int fibonacci(int value)
+long power(long value, long n)
 {
-    Context _("fibonacci", value); // do not care about this, it allow the display of call stack
+    Context _("power", value, n); // do not care about this, it allow the display of call stack
 
-    if(value==0){
-        return 0;
+    if (n==0){
+        return 1;
     }
-
-    else if (value==1){
-       return 1;
-    }
-
     else{
-        return fibonacci(value-1)+fibonacci(value-2);
-    }
+        return value * power(value, n-1);
+        }
 
-    return_and_display(value);
+    // your code
+    // return_and_display shows the result in the window and returns it
+    return_and_display(1);
 }
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);  // create a window manager
     MainWindow::instruction_duration = 400;  // make a pause between instruction display
-    MainWindow* w = new FibonacciWindow(fibonacci); // create a window for this exercice
+    MainWindow* w = new PowerWindow(power); // create a window for this exercice
     w->show(); // show exercice
 
     return a.exec(); // main loop while window is opened

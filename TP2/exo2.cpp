@@ -5,29 +5,39 @@
 
 MainWindow* w=nullptr;
 
+void insertionSort(Array& toSort){
+    Array& sorted=w->newArray(toSort.size());
 
-void bubbleSort(Array& toSort){
-    // bubbleSort
-    for (uint i=0; i<toSort.size(); i++)
+    sorted[0]=toSort[0];
+
+    for (int i=1; i<toSort.size(); i++)
     {
-        for (uint j=0; j<toSort.size()-i-1; j++){
-            if (toSort[j+1]<toSort[j])
-            {
-                uint temp=toSort[j];
-                toSort[j]=toSort[j+1];
-                toSort[j+1]=temp;
+        if (toSort[i]>sorted[i-1]){
+            sorted[i]=toSort[i];
+        }
+        else{
+            for (int j=0; j<i; j++){
+                if (toSort[i]<sorted[j])
+                {
+                    for (int k=i-1; k>=j; k--){
+                        sorted[k+1]=sorted[k];
+                    }
+                    sorted[j]=toSort[i];
+                    break;
+                }
             }
         }
     }
-}
 
+    toSort=sorted; // update the original array
+}
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    uint elementCount=20;
-    MainWindow::instruction_duration = 100;
-    w = new TestMainWindow(bubbleSort);
+    uint elementCount=15; // number of elements to sort
+    MainWindow::instruction_duration = 100; // delay between each array access (set, get, insert, ...)
+    w = new TestMainWindow(insertionSort); // window which display the behavior of the sort algorithm
     w->show();
 
     return a.exec();
