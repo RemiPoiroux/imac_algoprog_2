@@ -18,6 +18,16 @@ void HuffmanHeap::insertHeapNode(int heapSize, unsigned char c, int frequences)
       * int, this->get(i): HuffmanNode*  <-> this->get(i).frequences
      **/
     int i = heapSize;
+    this->get(i)=c;
+    this->get(i).frequences=frequences;
+
+    while (i>0 && this->get(i).frequences > this->get((i-1)/2).frequences)
+    {
+        HuffmanNode temp=this->get(i);
+        this->get(i)=this->get((i-1)/2);
+        this->get((i-1)/2)=temp;
+        i=(i-1)/2;
+    }
 }
 
 void HuffmanNode::insertNode(HuffmanNode* node)
@@ -35,7 +45,20 @@ void HuffmanNode::insertNode(HuffmanNode* node)
          * son caractère devient '\0'
         **/
         HuffmanNode* copy = new HuffmanNode(this->character, this->frequences);
+
         this->character = '\0';
+
+        if(node->frequences<copy->frequences) //Rq on aura bien node->frequences < 1/2*la fréquence de la racine
+        {
+            this->left = node;
+            this->right = copy;
+        }
+        else
+        {
+            this->left = copy;
+            this->right = node;
+        }
+
     }
     else
     {
@@ -46,6 +69,15 @@ void HuffmanNode::insertNode(HuffmanNode* node)
          * Remarques: Si un noeud n'est pas une feuille alors ses deux enfants sont
          * non-null (grâce à la condition d'au-dessus)
         **/
+        if(3*node->frequences < this->frequences)
+        {
+            this->left->insertNode(node);
+        }
+        else
+        {
+            this->right->insertNode(node);
+        }
+
     }
     /**
      * à chaque insertion on additionne au noeud courant la valeur
@@ -62,6 +94,17 @@ void HuffmanNode::processCodes(std::string baseCode)
       * child, add '0' to the baseCode and each time call the right
       * child, add '1'. If the node is a leaf, it takes the baseCode.
      **/
+    if (this->isLeaf())
+    {
+        this->code=baseCode;
+    }
+    else
+    {
+        if(this->left)
+            this->left->processCodes(baseCode+'0');
+        if (this->right)
+            this->right->processCodes(baseCode+'1');
+    }
 }
 
 void HuffmanNode::fillCharactersArray(HuffmanNode** nodes_for_chars)
@@ -82,6 +125,10 @@ void charFrequences(string data, Array& frequences)
       * frequences is an array of 256 int. frequences[i]
       * is the frequence of the caracter with ASCII code i
      **/
+    for(int i=0; i<data.size(); i++)
+    {
+        frequences[(int)data[i]]++;
+    }
 }
 
 void huffmanHeap(Array& frequences, HuffmanHeap& heap, int& heapSize)
@@ -91,6 +138,13 @@ void huffmanHeap(Array& frequences, HuffmanHeap& heap, int& heapSize)
       * Define heapSize as numbers of inserted nodes
      **/
     heapSize = 0;
+    for(int i=0; i<frequences.size(); i++){
+        if(frequences[i]>0)
+        {
+            heap.insertHeapNode(heapSize, (char)i, frequences[i]);
+            heapSize++;
+        }
+    }
 }
 
 void huffmanDict(HuffmanHeap& heap, int heapSize, HuffmanNode*& dict)
@@ -99,6 +153,9 @@ void huffmanDict(HuffmanHeap& heap, int heapSize, HuffmanNode*& dict)
       * For each value in heap, insert a new node in dict
      **/
     dict = new HuffmanNode(heap[0].character, heap[0].frequences);
+    for(int i=1; i<heapSize; i++){
+        dict->insertNode(new HuffmanNode(heap[i].character, heap[i].frequences));
+    }
 }
 
 string huffmanEncode(HuffmanNode** characters, string toEncode)
@@ -109,6 +166,10 @@ string huffmanEncode(HuffmanNode** characters, string toEncode)
       * character with the ASCII code i
      **/
     string encoded = "";
+    for(int i=0; i<toEncode.size(); i++)
+    {
+        encoded+=characters[(int)toEncode[i]]->code;
+    }
     return encoded;
 }
 
@@ -120,6 +181,27 @@ string huffmanDecode(HuffmanNode* dict, string toDecode)
       * the decoded character of this node.
      **/
     string decoded = "";
+
+    HuffmanNode* node=dict;
+
+    for(int i=0; i<toDecode.size(); i++)
+    {
+        if(toDecode[i]=='0')
+        {
+            node=node->left;
+        }
+        else
+        {
+            node=node->right;
+        }
+
+        if(node->isLeaf())
+        {
+            decoded+=node->character;
+            node=dict;
+        }
+
+    }
     return decoded;
 }
 
