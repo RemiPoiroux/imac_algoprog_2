@@ -23,7 +23,19 @@ std::vector<string> TP5::names(
 unsigned long int hash(string key)
 {
     // return an unique hash id from key
-    return 0;
+    unsigned long int id=0;
+
+    int index=0;
+    for(int i=key.size()-1; i>=0; i--)
+    {
+        //On utilise les  premiers charactères encodés en Ascii
+        //Ainsi on hash avec ascii(charac1)*128^(size-1)+...+ascii(derniercharac)*128⁰
+        //ce qui permettra de retrouver chaque charactere avec des divisions euclidiennes succéssives par 128^i
+        id+=(int)key[index]*pow(128,i);
+        index++;
+    }
+
+    return id;
 }
 
 struct MapNode : public BinaryTree
@@ -52,7 +64,28 @@ struct MapNode : public BinaryTree
      */
     void insertNode(MapNode* node)
     {
-
+        if(node->key_hash < this->key_hash)
+        {
+            if (this->left)
+            {
+                this->left->insertNode(node);
+            }
+            else
+            {
+                this->left=node;
+            }
+        }
+        else
+        {
+            if (this->right)
+            {
+                this->right->insertNode(node);
+            }
+            else
+            {
+                this->right=node;
+            }
+        }
     }
 
     void insertNode(string key, int value)
@@ -79,7 +112,13 @@ struct Map
      */
     void insert(string key, int value)
     {
-
+        if(this->root)
+        {
+            this->root->insertNode(key,value);
+        }
+        else{
+            this->root=new MapNode(key, value);
+        }
     }
 
     /**
@@ -89,7 +128,25 @@ struct Map
      */
     int get(string key)
     {
-        return -1;
+        unsigned long int id=hash(key);
+
+        MapNode* current=this->root;
+        while(current!=nullptr){
+            if(current->key_hash==id)
+            {
+                return current->value;
+            }
+            else if(current->key_hash > id)
+            {
+                current=current->left;
+            }
+            else
+            {
+                current=current->right;
+            }
+        }
+
+        return 0;
     }
 
     MapNode* root;
@@ -99,7 +156,7 @@ struct Map
 int main(int argc, char *argv[])
 {
     srand(time(NULL));
-	Map map;
+    Map map;
 
     map.insert("Yolo", 20);
     for (std::string& name : TP5::names)

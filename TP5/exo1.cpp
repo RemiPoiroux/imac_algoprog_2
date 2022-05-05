@@ -18,12 +18,19 @@ std::vector<string> TP5::names(
 int HashTable::hash(std::string element)
 {
     // use this->size() to get HashTable size
-    return 0;
+    int hash=(int)element[0];
+    int size=this->size();
+    if (hash>=size){
+        hash=hash%size;
+    }
+    return hash;
 }
 
 void HashTable::insert(std::string element)
 {
     // use (*this)[i] or this->get(i) to get a value at index i
+    int i=this->hash(element);
+    this->get(i)=element;
 }
 
 /**
@@ -34,22 +41,32 @@ void HashTable::insert(std::string element)
  */
 void buildHashTable(HashTable& table, std::string* names, int namesCount)
 {
-
+    for(int i=0; i<namesCount; i++)
+    {
+        table.insert(names[i]);
+    }
 }
 
 bool HashTable::contains(std::string element)
 {
     // Note: Do not use iteration (for, while, ...)
-    return false;
+    if(this->get(this->hash(element))==element)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 
 int main(int argc, char *argv[])
 {
-	QApplication a(argc, argv);
-	MainWindow::instruction_duration = 10;
-	w = new HashWindow();
-	w->show();
+    QApplication a(argc, argv);
+    MainWindow::instruction_duration = 10;
+    w = new HashWindow();
+    w->show();
 
-	return a.exec();
+    return a.exec();
 }
