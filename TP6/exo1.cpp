@@ -79,8 +79,8 @@ void Graph::wideTravel(GraphNode *first, GraphNode *nodes[], int &nodesSize, boo
 //        {
 //        V e r t e x v = q . pop ( ) ;
 //        print (v) ;
-    //        v i s i t e d [ v . index ] = true ;
-    //        f o r ( Edge e=v . f i r s t _ e d g e ; e != NULL ; e=e . n e x t )
+//        v i s i t e d [ v . index ] = true ;
+//        f o r ( Edge e=v . f i r s t _ e d g e ; e != NULL ; e=e . n e x t )
 //        {
 //        i f (! v i s i t e d [ e . second_vertex . index ] )
 //        q . push ( e . s e c o n d _ v e r t e x ) ;
